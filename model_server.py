@@ -26,6 +26,7 @@ app.logger.info(f"Using device: {device}")
 
 
 # Initialize model, config and load checkpoint
+# Note: This server currently only supports target present mode!
 hparams = JsonConfig("hparams/coco_search18.json")
 preset_tasks = np.load("./all_task_ids.npy", allow_pickle=True).item()
 preset_tasks = {str(k): int(v) for k, v in preset_tasks.items()}
@@ -87,8 +88,6 @@ def get_fixation_history(x_hist, y_hist, image_size):
     y = y_hist * hparams.Data.patch_num[1] // image_size[1]
 
     fixation_hist = y * hparams.Data.patch_num[0] + x
-    fixation_hist = fixation_hist[-hparams.Data.max_traj_length :]
-
     return fixation_hist[-hparams.Data.max_traj_length :]
 
 
