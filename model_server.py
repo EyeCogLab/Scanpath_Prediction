@@ -10,7 +10,6 @@ from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 from flask import Flask, request
 from PIL import Image, ImageFilter
-from torchvision import transforms
 
 from irl_dcb.config import JsonConfig
 from irl_dcb.environment import IRL_Env4LHF
@@ -142,8 +141,10 @@ def conditional_log_density(task_id):
     probs = F.interpolate(
         probs.reshape(1, 1, *hparams.Data.patch_num[::-1]),
         size=(image.size[1], image.size[0]),
-        mode="nearest",
+        mode="bicubic",
     ).squeeze()
+    # bicubic interpolation can create negative value; clamp to epsilon for stability
+    probs = probs.clamp(min=1e-30)
     probs /= probs.sum()
     log_density = torch.log(probs)
 
