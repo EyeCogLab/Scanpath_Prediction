@@ -155,7 +155,7 @@ def conditional_log_density(task_id):
 
 @app.route("/type", methods=["GET"])
 def type():
-    type = "IRLDCB"
+    type = "Scanpath_Prediction"
     version = "v1.0.0"
     return orjson.dumps({"type": type, "version": version})
 
